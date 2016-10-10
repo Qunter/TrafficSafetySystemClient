@@ -10,17 +10,20 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".UI.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="@string/app_name">
         </activity>
-        <activity android:name=".UI.LoginActivity">
+        <activity android:name=".UI.LoginActivity"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UI.VerificationActivity"/>
+        <activity android:name=".UI.VerificationActivity"
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".UI.SettingActivity"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

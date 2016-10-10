@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="frequency">
+        <item>100</item>
+        <item>200</item>
+        <item>300</item>
+        <item>500</item>
+        <item>1000</item>
+    </string-array>
+    <string-array name="alarm">
+        <item>急促</item>
+        <item>闹铃</item>
+        <item>音乐</item>
+    </string-array>
+</resources>

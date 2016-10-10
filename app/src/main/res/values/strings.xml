@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Traffic safety system</string>
     <string name="action_settings">Settings</string>
+    <string name="highthroughput">高通</string>
+    <string name="lowthroughput">低通</string>
+    <string name="electrode">电极数</string>
+    <string name="refresh">刷新频率</string>
 </resources>

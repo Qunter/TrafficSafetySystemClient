@@ -31,12 +31,7 @@ public class VerificationActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 showProgressDialog();
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Intent intent = new Intent(VerificationActivity.this,MainActivity.class);
+                Intent intent = new Intent(VerificationActivity.this,SettingActivity.class);
                 startActivity(intent);
             }
         });

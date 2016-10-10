@@ -7,11 +7,17 @@
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"/>
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:id="@+id/setting_frequency"
+        android:entries="@array/frequency"/>
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"/>
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:entries="@array/alarm"
+        android:id="@+id/setting_alarm"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,20 +26,24 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_weight="1"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:id="@+id/setting_high">
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="高通"/>
+                android:gravity="center"
+                android:hint="@string/highthroughput"/>
         </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_weight="1"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:id="@+id/setting_low">
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="低通"/>
+                android:gravity="center"
+                android:hint="@string/lowthroughput"/>
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 
@@ -45,30 +55,36 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_weight="1"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:id="@+id/setting_electrode">
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="电极数"/>
+                android:gravity="center"
+                android:hint="@string/electrode"/>
         </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_weight="1"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:id="@+id/setting_refresh">
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="刷新频率"/>
+                android:gravity="center"
+                android:hint="@string/refresh"/>
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp">
+        android:layout_margin="16dp"
+        android:id="@+id/setting_alarmNum">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:hint="警报域值"/>
     </android.support.design.widget.TextInputLayout>
 
@@ -76,6 +92,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
+        android:id="@+id/setting_submit"
         android:text="确定"/>
 
 </LinearLayout>
