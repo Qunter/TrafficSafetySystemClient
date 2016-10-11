@@ -31,7 +31,7 @@ public class VerificationActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 showProgressDialog();
-                Intent intent = new Intent(VerificationActivity.this,SettingActivity.class);
+                Intent intent = new Intent(VerificationActivity.this,MainActivity.class);
                 startActivity(intent);
             }
         });
