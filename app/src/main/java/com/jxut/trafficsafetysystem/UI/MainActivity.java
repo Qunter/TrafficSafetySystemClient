@@ -39,8 +39,17 @@ public class MainActivity extends ActionBarActivity {
     // 用来存放要传递给客户端的数据
     private static String data;
     //handler发送处理消息
-    private Handler handler;
     private String b;
+
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (msg.what == 0x1314) {
+                textView.append("服务器：" + b + '\n');
+            }
+            return true;
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,30 +60,16 @@ public class MainActivity extends ActionBarActivity {
         textView = (TextView) findViewById(R.id.textView);
         //设置textView可以滚动
         textView.setMovementMethod(ScrollingMovementMethod.getInstance());
-        handler = new Handler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                if (msg.what == 0x1314) {
-                    textView.append("服务器：" + b + '\n');
-                    Log.e("--->", "" + b);
-                }
-                return true;
-            }
-        });
-
         new Thread(new Runnable() {
-
             @Override
             public void run() {
                 try {
-                    // 10.200.30.141.
                     socket = new Socket("10.200.30.141", 5000);
                     Log.e("--->", "已发出链接请求");
                     in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     out = socket.getOutputStream();
                     while (socket != null) {
                         b = in.readLine();
-//							textView.append("服务器：" + b + '\n');
                         handler.sendEmptyMessage(0x1314);
                     }
                 } catch (UnknownHostException e) {
