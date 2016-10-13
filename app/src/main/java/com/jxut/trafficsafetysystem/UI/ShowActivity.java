@@ -1,312 +1,91 @@
 package com.jxut.trafficsafetysystem.UI;
 
-import android.graphics.Color;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.jxut.trafficsafetysystem.R;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;
-import lecho.lib.hellocharts.model.Axis;
-import lecho.lib.hellocharts.model.Column;
-import lecho.lib.hellocharts.model.ColumnChartData;
-import lecho.lib.hellocharts.model.Line;
-import lecho.lib.hellocharts.model.LineChartData;
-import lecho.lib.hellocharts.model.PointValue;
-import lecho.lib.hellocharts.model.SubcolumnValue;
-import lecho.lib.hellocharts.util.ChartUtils;
-import lecho.lib.hellocharts.view.ColumnChartView;
-import lecho.lib.hellocharts.view.LineChartView;
-
 public class ShowActivity extends BaseActivity {
 
-    private static final int DEFAULT_DATA = 0;
-    private static final int SUBCOLUMNS_DATA = 1;
-    private static final int STACKED_DATA = 2;
-    private static final int NEGATIVE_SUBCOLUMNS_DATA = 3;
-    private static final int NEGATIVE_STACKED_DATA = 4;
+    private EditText editText;
+    private Button button;
+    // 输出流
+    private BufferedReader in;
+    //输出流
+    private OutputStream out;
+    // 客户端socket
+    private Socket socket;
+    // 显示数据
+    private TextView textView;
+    // 用来存放要传递给客户端的数据
+    private static String data;
+    //handler发送处理消息
+    private String b;
 
-    private ColumnChartView chart;
-    private ColumnChartData data;
-    private boolean hasAxes = true;
-    private boolean hasAxesNames = true;
-    private boolean hasLabels = false;
-    private boolean hasLabelForSelected = false;
-    private int dataType = DEFAULT_DATA;
-
-
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (msg.what == 0x1314) {
+                textView.append("服务器：" + b + '\n');
+            }
+            return true;
+        }
+    });
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show);
-        chart = (ColumnChartView) findViewById(R.id.chart);
-        chart.setOnValueTouchListener(new ValueTouchListener());
-        generateData();
+        textView = (TextView) findViewById(R.id.show_text);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    socket = new Socket("192.168.1.102", 5000);
+                    Log.e("--->", "已发出链接请求");
+                    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    out = socket.getOutputStream();
+                    while (socket != null) {
+                        b = in.readLine();
+                        handler.sendEmptyMessage(0x1314);
+                    }
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+//        button.setOnClickListener(new OnClickListener() {
+//
+//            @Override
+//            public void onClick(View arg0) {
+//                data = editText.getText().toString();
+//                textView.append("移动端说：" + data + '\n');
+//                editText.setText("");
+//                try {
+//                    if (socket != null) {
+//                        out.write((data + '\n').getBytes("utf-8"));
+//                        out.flush();
+//                    } else
+//                        Log.e("--->", "服务器未连接，无法获得输出流");
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
     }
-
-    private void generateDefaultData() {
-        int numSubcolumns = 1;
-        int numColumns = 8;
-        // Column can have many subcolumns, here by default I use 1 subcolumn in each of 8 columns.
-        List<Column> columns = new ArrayList<Column>();
-        List<SubcolumnValue> values;
-        for (int i = 0; i < numColumns; ++i) {
-
-            values = new ArrayList<SubcolumnValue>();
-            for (int j = 0; j < numSubcolumns; ++j) {
-                values.add(new SubcolumnValue((float) Math.random() * 50f + 5, ChartUtils.pickColor()));
-            }
-
-            Column column = new Column(values);
-            column.setHasLabels(hasLabels);
-            column.setHasLabelsOnlyForSelected(hasLabelForSelected);
-            columns.add(column);
-        }
-
-        data = new ColumnChartData(columns);
-
-        if (hasAxes) {
-            Axis axisX = new Axis();
-            Axis axisY = new Axis().setHasLines(true);
-            if (hasAxesNames) {
-                axisX.setName("Axis X");
-                axisY.setName("Axis Y");
-            }
-            data.setAxisXBottom(axisX);
-            data.setAxisYLeft(axisY);
-        } else {
-            data.setAxisXBottom(null);
-            data.setAxisYLeft(null);
-        }
-
-        chart.setColumnChartData(data);
-
-    }
-
-    /**
-     * Generates columns with subcolumns, columns have larger separation than subcolumns.
-     */
-    private void generateSubcolumnsData() {
-        int numSubcolumns = 4;
-        int numColumns = 4;
-        // Column can have many subcolumns, here I use 4 subcolumn in each of 8 columns.
-        List<Column> columns = new ArrayList<Column>();
-        List<SubcolumnValue> values;
-        for (int i = 0; i < numColumns; ++i) {
-
-            values = new ArrayList<SubcolumnValue>();
-            for (int j = 0; j < numSubcolumns; ++j) {
-                values.add(new SubcolumnValue((float) Math.random() * 50f + 5, ChartUtils.pickColor()));
-            }
-
-            Column column = new Column(values);
-            column.setHasLabels(hasLabels);
-            column.setHasLabelsOnlyForSelected(hasLabelForSelected);
-            columns.add(column);
-        }
-
-        data = new ColumnChartData(columns);
-
-        if (hasAxes) {
-            Axis axisX = new Axis();
-            Axis axisY = new Axis().setHasLines(true);
-            if (hasAxesNames) {
-                axisX.setName("Axis X");
-                axisY.setName("Axis Y");
-            }
-            data.setAxisXBottom(axisX);
-            data.setAxisYLeft(axisY);
-        } else {
-            data.setAxisXBottom(null);
-            data.setAxisYLeft(null);
-        }
-
-        chart.setColumnChartData(data);
-
-    }
-
-    /**
-     * Generates columns with stacked subcolumns.
-     */
-    private void generateStackedData() {
-        int numSubcolumns = 4;
-        int numColumns = 8;
-        // Column can have many stacked subcolumns, here I use 4 stacke subcolumn in each of 4 columns.
-        List<Column> columns = new ArrayList<Column>();
-        List<SubcolumnValue> values;
-        for (int i = 0; i < numColumns; ++i) {
-
-            values = new ArrayList<SubcolumnValue>();
-            for (int j = 0; j < numSubcolumns; ++j) {
-                values.add(new SubcolumnValue((float) Math.random() * 20f + 5, ChartUtils.pickColor()));
-            }
-
-            Column column = new Column(values);
-            column.setHasLabels(hasLabels);
-            column.setHasLabelsOnlyForSelected(hasLabelForSelected);
-            columns.add(column);
-        }
-
-        data = new ColumnChartData(columns);
-
-        // Set stacked flag.
-        data.setStacked(true);
-
-        if (hasAxes) {
-            Axis axisX = new Axis();
-            Axis axisY = new Axis().setHasLines(true);
-            if (hasAxesNames) {
-                axisX.setName("Axis X");
-                axisY.setName("Axis Y");
-            }
-            data.setAxisXBottom(axisX);
-            data.setAxisYLeft(axisY);
-        } else {
-            data.setAxisXBottom(null);
-
-            data.setAxisYLeft(null);
-        }
-
-        chart.setColumnChartData(data);
-    }
-
-    private void generateNegativeSubcolumnsData() {
-
-        int numSubcolumns = 4;
-        int numColumns = 4;
-        List<Column> columns = new ArrayList<Column>();
-        List<SubcolumnValue> values;
-        for (int i = 0; i < numColumns; ++i) {
-
-            values = new ArrayList<SubcolumnValue>();
-            for (int j = 0; j < numSubcolumns; ++j) {
-                int sign = getSign();
-                values.add(new SubcolumnValue((float) Math.random() * 50f * sign + 5 * sign, ChartUtils.pickColor
-                        ()));
-            }
-
-            Column column = new Column(values);
-            column.setHasLabels(hasLabels);
-            column.setHasLabelsOnlyForSelected(hasLabelForSelected);
-            columns.add(column);
-        }
-
-        data = new ColumnChartData(columns);
-
-        if (hasAxes) {
-            Axis axisX = new Axis();
-            Axis axisY = new Axis().setHasLines(true);
-            if (hasAxesNames) {
-                axisX.setName("Axis X");
-                axisY.setName("Axis Y");
-            }
-            data.setAxisXBottom(axisX);
-            data.setAxisYLeft(axisY);
-        } else {
-            data.setAxisXBottom(null);
-            data.setAxisYLeft(null);
-        }
-
-        chart.setColumnChartData(data);
-    }
-
-    private void generateNegativeStackedData() {
-
-        int numSubcolumns = 4;
-        int numColumns = 8;
-        // Column can have many stacked subcolumns, here I use 4 stacke subcolumn in each of 4 columns.
-        List<Column> columns = new ArrayList<Column>();
-        List<SubcolumnValue> values;
-        for (int i = 0; i < numColumns; ++i) {
-
-            values = new ArrayList<SubcolumnValue>();
-            for (int j = 0; j < numSubcolumns; ++j) {
-                int sign = getSign();
-                values.add(new SubcolumnValue((float) Math.random() * 20f * sign + 5 * sign, ChartUtils.pickColor()));
-            }
-
-            Column column = new Column(values);
-            column.setHasLabels(hasLabels);
-            column.setHasLabelsOnlyForSelected(hasLabelForSelected);
-            columns.add(column);
-        }
-
-        data = new ColumnChartData(columns);
-
-        // Set stacked flag.
-        data.setStacked(true);
-
-        if (hasAxes) {
-            Axis axisX = new Axis();
-            Axis axisY = new Axis().setHasLines(true);
-            if (hasAxesNames) {
-                axisX.setName("Axis X");
-                axisY.setName("Axis Y");
-            }
-            data.setAxisXBottom(axisX);
-            data.setAxisYLeft(axisY);
-        } else {
-            data.setAxisXBottom(null);
-            data.setAxisYLeft(null);
-        }
-
-        chart.setColumnChartData(data);
-    }
-
-    private int getSign() {
-        int[] sign = new int[]{-1, 1};
-        return sign[Math.round((float) Math.random())];
-    }
-
-    private void generateData() {
-        switch (dataType) {
-            case DEFAULT_DATA:
-                generateDefaultData();
-                break;
-            case SUBCOLUMNS_DATA:
-                generateSubcolumnsData();
-                break;
-            case STACKED_DATA:
-                generateStackedData();
-                break;
-            case NEGATIVE_SUBCOLUMNS_DATA:
-                generateNegativeSubcolumnsData();
-                break;
-            case NEGATIVE_STACKED_DATA:
-                generateNegativeStackedData();
-                break;
-            default:
-                generateDefaultData();
-                break;
-        }
-    }
-
-    private class ValueTouchListener implements ColumnChartOnValueSelectListener {
-
-        @Override
-        public void onValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {
-                Toast.makeText(ShowActivity.this, "Selected: " + value, Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onValueDeselected() {
-            // TODO Auto-generated method stub
-
-        }
-
-    }
-
 }
-
-
