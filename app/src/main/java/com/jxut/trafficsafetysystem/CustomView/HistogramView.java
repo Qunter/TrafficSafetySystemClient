@@ -1,23 +1,16 @@
-package com.jxut.trafficsafetysystem.UI;
+package com.jxut.trafficsafetysystem.CustomView;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.animation.Animation;
 
-import com.jxut.trafficsafetysystem.R;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Random;
 
 /**
@@ -35,14 +28,12 @@ public class HistogramView extends SurfaceView implements Callback, Runnable {//
     private int radius;//园的半径
     private int count;//计数器
     private int num;//圆形曲线的编号
-    private Path[] paths;
 
     public HistogramView(Context context) {
         super(context);
         initView();
 
     }
-
 
     public HistogramView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -71,11 +62,6 @@ public class HistogramView extends SurfaceView implements Callback, Runnable {//
             next[i] = radius;
         }
         count = 0;
-        //读取测试数据
-        paths = new Path[1];
-        for (int i = 0; i < 1; i++) {
-            paths[i] = new Path();
-        }
         this.setKeepScreenOn(true);// 保持屏幕常亮
     }
 
@@ -86,6 +72,15 @@ public class HistogramView extends SurfaceView implements Callback, Runnable {//
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        try{
+            canvas = sfh.lockCanvas();
+            canvas.drawColor(Color.WHITE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            if (canvas != null)
+                sfh.unlockCanvasAndPost(canvas);  // 将画好的画布提交
+        }
         th.start();
     }
 
@@ -111,14 +106,14 @@ public class HistogramView extends SurfaceView implements Callback, Runnable {//
             count++;
             paint.setTextSize(24);
             //画柱状图
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 8; i++) {
                 paint.setColor(Color.argb(200, 255 - 20 * i, (i * 60) % 255, i * 35));
                 paint.setStyle(Paint.Style.FILL);
                 paint.setStrokeWidth(1);
                 drawcloumn(i, (int) len[i][num]);
             }
             //画坐标轴
-            canvas.drawText("  (Hz)  0               10               20               30", 125, 450, paint);
+            canvas.drawText("  (Hz)  0              10               20              30              40              60              70              80              90", 25, 450, paint);
 
         } catch (Exception ex) {
         } finally {
@@ -153,7 +148,7 @@ public class HistogramView extends SurfaceView implements Callback, Runnable {//
     public void drawcloumn(int n, int length) {//画单个柱状图
 
         for (int i = 0; i < (length / 10); i++) {
-            RectF myrect = new RectF(200 + n * 90, 400 - i * 6, 270 + n * 90, 404 - i * 6);
+            RectF myrect = new RectF(100 + n * 112, 350 - i * 8, 200 + n * 112, 356 - i * 8);
             canvas.drawRect(myrect, paint);
         }
     }

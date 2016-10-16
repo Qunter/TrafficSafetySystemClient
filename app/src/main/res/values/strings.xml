@@ -5,4 +5,5 @@
     <string name="lowthroughput">低通</string>
     <string name="electrode">电极数</string>
     <string name="refresh">刷新频率</string>
+    <string name="verification">验证</string>
 </resources>

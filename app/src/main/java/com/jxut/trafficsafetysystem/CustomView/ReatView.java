@@ -1,4 +1,4 @@
-package com.jxut.trafficsafetysystem.UI;
+package com.jxut.trafficsafetysystem.CustomView;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -29,21 +29,22 @@ public class ReatView extends SurfaceView implements SurfaceHolder.Callback, Run
     private Canvas canvas;
     private Paint paint;
     private int newcount;
-    private Path paths;
+    private Path paths1;
+    private Path paths2;
     // 输出流
     private BufferedReader in;
     // 客户端socket
     private Socket socket;
     //handler发送处理消息
     private String b;
+    private int ScreenW;
+    private int ScreenH;
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             if (msg.what == 0x1314) {
-                if (!b.equals(null)) {
-                    draw(b);
-                }
+                draw(b);
             }
             return true;
         }
@@ -71,13 +72,26 @@ public class ReatView extends SurfaceView implements SurfaceHolder.Callback, Run
         paint = new Paint();
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.FILL);
+        b = null;
         newcount = 0;
-        paths = new Path();
+        paths1 = new Path();
+        paths2 = new Path();
         this.setKeepScreenOn(true);// 保持屏幕常亮
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        ScreenW = this.getWidth();// 获取屏幕宽度
+        ScreenH = this.getHeight();  // 获取屏幕高度
+        try{
+            canvas = sfh.lockCanvas();
+            canvas.drawColor(Color.WHITE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            if (canvas != null)
+                sfh.unlockCanvasAndPost(canvas);  // 将画好的画布提交
+        }
         th.start();
     }
 
@@ -103,8 +117,11 @@ public class ReatView extends SurfaceView implements SurfaceHolder.Callback, Run
     @Override
     public void run() {
         try {
-            socket = new Socket("10.200.10.108", 5000);
+            socket = new Socket("192.168.1.101", 5000);
             Log.e("--->", "已发出链接请求");
+            if (!socket.getKeepAlive()){
+                socket.setKeepAlive(true);
+            }
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
             e.printStackTrace();
@@ -113,6 +130,9 @@ public class ReatView extends SurfaceView implements SurfaceHolder.Callback, Run
             while (socket != null) {
                 try {
                     b = in.readLine();
+                    if (b.equals("")||b.equals(null)){
+                        b = "  0099.0000  0099.0000";
+                    }
                     handler.sendEmptyMessage(0x1314);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -124,6 +144,8 @@ public class ReatView extends SurfaceView implements SurfaceHolder.Callback, Run
         }
     }
 
+
+
     private void draw(String str) {
         try {
             String x;
@@ -131,9 +153,9 @@ public class ReatView extends SurfaceView implements SurfaceHolder.Callback, Run
             canvas = sfh.lockCanvas(); // 得到一个canvas实例
             canvas.drawColor(Color.WHITE);// 刷屏
             //绘制实时脑电
-            if (str.length() > 23) {
+            if (!str.equals(null)&str.length() > 23) {
                 x = str.substring(0, 6).trim();
-                y = str.substring(6,12).trim();
+                y = str.substring(13,18).trim();
                 Log.e("--->", "已得到数据x:" + x + "和y:" + y);
             } else {
                 return;
@@ -142,12 +164,20 @@ public class ReatView extends SurfaceView implements SurfaceHolder.Callback, Run
             paint.setColor(Color.GREEN);
             //绘制波形图
             if (newcount == 0) {
-                paths.reset();
-                paths.moveTo(100, 200);
+                paths1.reset();
+                paths1.moveTo(100, 100);
             }
-            paths.lineTo(101 + Integer.parseInt(x)-9000, 201 + Integer.parseInt(y)-8000);
-            canvas.drawPath(paths, paint);
+            paths1.lineTo(101 + newcount,101 + (Integer.parseInt(x)%1000) % 100);
+            canvas.drawPath(paths1, paint);
+            if(newcount == 0){
+                paths2.reset();
+                paths2.moveTo(100, 250);
+            }
+            paths2.lineTo(101 + newcount,251 + ((Integer.parseInt(y)%10000)%1000)%100);
+            canvas.drawPath(paths2,paint);
             newcount = (newcount + 4) % 900;
+
+
         } catch (Exception ex) {
         } finally {
             if (canvas != null)

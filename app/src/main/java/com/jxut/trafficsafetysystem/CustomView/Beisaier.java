@@ -1,4 +1,4 @@
-package com.jxut.trafficsafetysystem.UI;
+package com.jxut.trafficsafetysystem.CustomView;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -114,8 +114,6 @@ public class Beisaier extends SurfaceView implements Callback, Runnable {// 备�
             value2[0] = (Integer.parseInt(datastr[0]) - easyvalue[0]) / 1000;
             paths[0].lineTo(101 + newcount, 50 + value2[0]);
             canvas.drawPath(paths[0], paint);
-
-
             newcount = (newcount + 4) % 1400;
             //获取绘图数据
             if (count % 10 == 0) {
