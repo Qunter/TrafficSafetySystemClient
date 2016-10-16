@@ -11,16 +11,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jxut.trafficsafetysystem.R;
 
 public class ShowActivity extends BaseActivity {
 
-    private EditText editText;
-    private Button button;
     // 输出流
     private BufferedReader in;
     //输出流
@@ -53,7 +49,7 @@ public class ShowActivity extends BaseActivity {
             @Override
             public void run() {
                 try {
-                    socket = new Socket("192.168.1.102", 5000);
+                    socket = new Socket("192.16.137.5", 5000);
                     Log.e("--->", "已发出链接请求");
                     in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     out = socket.getOutputStream();
@@ -68,24 +64,5 @@ public class ShowActivity extends BaseActivity {
                 }
             }
         }).start();
-
-//        button.setOnClickListener(new OnClickListener() {
-//
-//            @Override
-//            public void onClick(View arg0) {
-//                data = editText.getText().toString();
-//                textView.append("移动端说：" + data + '\n');
-//                editText.setText("");
-//                try {
-//                    if (socket != null) {
-//                        out.write((data + '\n').getBytes("utf-8"));
-//                        out.flush();
-//                    } else
-//                        Log.e("--->", "服务器未连接，无法获得输出流");
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
     }
 }

@@ -31,7 +31,7 @@ public class LoginActivity extends BaseActivity {
                 password = passwordLayout.getEditText().getText().toString();
                 if(isSignIn(accent,password)){
                     Intent intent = new Intent();
-                    intent.setClass(LoginActivity.this,SettingActivity.class);
+                    intent.setClass(LoginActivity.this,VerificationActivity.class);
                     startActivity(intent);
                 }
             }
