@@ -17,8 +17,6 @@ import java.net.Socket;
  */
 public class VerificationActivity extends BaseActivity {
 
-
-    private String ip;
     private Socket socket;
 
     @SuppressLint("HandlerLeak")
@@ -27,7 +25,6 @@ public class VerificationActivity extends BaseActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 0x101) {
-
                 Intent intent = new Intent();
                 intent.setClass(VerificationActivity.this, SettingActivity.class);
                 startActivity(intent);
@@ -38,7 +35,6 @@ public class VerificationActivity extends BaseActivity {
     @Override
     public void initViews() {
         super.initViews();
-
         setContentView(R.layout.activity_verification);
         Button connect = (Button) findViewById(R.id.verification_connect);
         connect.setOnClickListener(new View.OnClickListener() {
@@ -61,7 +57,6 @@ public class VerificationActivity extends BaseActivity {
                                                    }
                                                }
                                            }
-
                                            ).start();
                                        }
                                    }
@@ -73,12 +68,6 @@ public class VerificationActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(null);
-        try {
-            socket.setKeepAlive(false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 }
 
