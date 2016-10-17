@@ -1,5 +1,7 @@
-# Traffic safe System #
+# Traffic safe System Client
 
-## This is a project form JiangXi university of technology ! ##
+## This is a project form JiangXi university of technology ! 
 
-### If you want to know more.sorry,that is all! ###
+[ Server address ] https://github.com/yufalu/TrafficSafetySystemServer
+
+### If you want to know more.sorry,that is all!
