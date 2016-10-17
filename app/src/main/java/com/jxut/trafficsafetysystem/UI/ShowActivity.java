@@ -1,7 +1,5 @@
 package com.jxut.trafficsafetysystem.UI;
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -49,8 +47,7 @@ public class ShowActivity extends BaseActivity {
         startActivity(intent);
     }
     private void exit(){
-        ActivityManager am = (ActivityManager)getSystemService (Context.ACTIVITY_SERVICE);
-        am.restartPackage(getPackageName());
+        ShowActivity.this.finish();
     }
     private void play(){
         SPManger spManger = new SPManger(this,"MusicWarring");

@@ -81,6 +81,7 @@ public class SettingActivity extends BaseActivity {
     private void toNew(){
         Intent intent = new Intent();
         intent.setClass(SettingActivity.this,ShowActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }
