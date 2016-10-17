@@ -4,6 +4,8 @@
     package="com.jxut.trafficsafetysystem">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
 
     <application
         android:allowBackup="true"
@@ -32,6 +34,11 @@
         <activity android:name=".UI.VerificationActivity"
             android:theme="@style/AppTheme"
             android:label="@string/verification"
+            tools:ignore="InnerclassSeparator" />
+        <activity android:name=".UI.MusciActivity"
+            android:label="@string/mymusic"
+            android:theme="@style/AppTheme"
+            android:exported="true"
             tools:ignore="InnerclassSeparator" />
     </application>
 

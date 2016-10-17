@@ -6,4 +6,5 @@
     <string name="electrode">电极数</string>
     <string name="refresh">刷新频率</string>
     <string name="verification">验证</string>
+    <string name="mymusic">我的音乐</string>
 </resources>

@@ -33,6 +33,7 @@ public class LoginActivity extends BaseActivity {
                     Intent intent = new Intent();
                     intent.setClass(LoginActivity.this,SettingActivity.class);
                     startActivity(intent);
+                    LoginActivity.this.finish();
                 }
             }
         });

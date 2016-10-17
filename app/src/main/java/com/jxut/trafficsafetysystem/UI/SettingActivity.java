@@ -1,12 +1,10 @@
 package com.jxut.trafficsafetysystem.UI;
 
 import android.content.Intent;
-import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.jxut.trafficsafetysystem.R;
 
@@ -72,5 +70,6 @@ public class SettingActivity extends BaseActivity {
         Intent intent = new Intent();
         intent.setClass(SettingActivity.this,ShowActivity.class);
         startActivity(intent);
+        finish();
     }
 }
