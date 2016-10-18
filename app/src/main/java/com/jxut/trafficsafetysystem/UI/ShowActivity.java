@@ -1,18 +1,12 @@
 package com.jxut.trafficsafetysystem.UI;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.jxut.trafficsafetysystem.R;
-import com.jxut.trafficsafetysystem.Util.SPManger;
-
-import java.io.File;
-import java.io.IOException;
 
 
 /**
@@ -48,28 +42,5 @@ public class ShowActivity extends BaseActivity {
     }
     private void exit(){
         ShowActivity.this.finish();
-    }
-    private void play(){
-        SPManger spManger = new SPManger(this,"MusicWarring");
-        String path = (String)spManger.get("Music","musicFileUrl");
-        if(new File(path).isFile()){
-            MediaPlayer mediaPlayer=new MediaPlayer();
-            try {
-                mediaPlayer.setDataSource(path);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                //初始化播放
-                mediaPlayer.prepare();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //准备播放
-            mediaPlayer.start();
-        }else{
-            Toast.makeText(this,"您还没有选择音乐呢！",Toast.LENGTH_SHORT).show();
-        }
-
     }
 }
